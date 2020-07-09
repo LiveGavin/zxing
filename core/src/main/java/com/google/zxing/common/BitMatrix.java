@@ -41,7 +41,7 @@ public final class BitMatrix implements Cloneable {
   private final int[] bits;
 
   /**
-   * Creates an empty square {@link BitMatrix}.
+   * Creates an empty square {@code BitMatrix}.
    *
    * @param dimension height and width
    */
@@ -50,7 +50,7 @@ public final class BitMatrix implements Cloneable {
   }
 
   /**
-   * Creates an empty {@link BitMatrix}.
+   * Creates an empty {@code BitMatrix}.
    *
    * @param width bit matrix width
    * @param height bit matrix height
@@ -73,10 +73,10 @@ public final class BitMatrix implements Cloneable {
   }
 
   /**
-   * Interprets a 2D array of booleans as a {@link BitMatrix}, where "true" means an "on" bit.
+   * Interprets a 2D array of booleans as a {@code BitMatrix}, where "true" means an "on" bit.
    *
    * @param image bits of the image, as a row-major 2D array. Elements are arrays representing rows
-   * @return {@link BitMatrix} representation of image
+   * @return {@code BitMatrix} representation of image
    */
   public static BitMatrix parse(boolean[][] image) {
     int height = image.length;
@@ -196,11 +196,10 @@ public final class BitMatrix implements Cloneable {
    * @param mask XOR mask
    */
   public void xor(BitMatrix mask) {
-    if (width != mask.getWidth() || height != mask.getHeight()
-        || rowSize != mask.getRowSize()) {
+    if (width != mask.width || height != mask.height || rowSize != mask.rowSize) {
       throw new IllegalArgumentException("input matrix dimensions do not match");
     }
-    BitArray rowArray = new BitArray(width / 32 + 1);
+    BitArray rowArray = new BitArray(width);
     for (int y = 0; y < height; y++) {
       int offset = y * rowSize;
       int[] row = mask.getRow(y, rowArray).getBitArray();
@@ -281,17 +280,17 @@ public final class BitMatrix implements Cloneable {
    * Modifies this {@code BitMatrix} to represent the same but rotated 180 degrees
    */
   public void rotate180() {
-    int width = getWidth();
-    int height = getHeight();
     BitArray topRow = new BitArray(width);
     BitArray bottomRow = new BitArray(width);
-    for (int i = 0; i < (height + 1) / 2; i++) {
+    int maxHeight = (height + 1) / 2;
+    for (int i = 0; i < maxHeight; i++) {
       topRow = getRow(i, topRow);
-      bottomRow = getRow(height - 1 - i, bottomRow);
+      int bottomRowIndex = height - 1 - i;
+      bottomRow = getRow(bottomRowIndex, bottomRow);
       topRow.reverse();
       bottomRow.reverse();
       setRow(i, bottomRow);
-      setRow(height - 1 - i, topRow);
+      setRow(bottomRowIndex, topRow);
     }
   }
 
